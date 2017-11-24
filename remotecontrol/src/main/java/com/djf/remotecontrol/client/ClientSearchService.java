@@ -76,11 +76,11 @@ public class ClientSearchService extends Service {
                 @Override
                 protected void onPreExecute() {
                     super.onPreExecute();
+                    results.clear();
                     if (mCallback != null) {
                         mCallback.onEvent(SerachEventCallback.StartSearch);//开始扫描
                     }
                     isSearching = true;
-                    results.clear();
                 }
 
                 @Override

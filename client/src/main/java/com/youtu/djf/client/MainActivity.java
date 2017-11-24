@@ -1,5 +1,6 @@
 package com.youtu.djf.client;
 
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements SerachEventCallba
     private TextView mTvHello;
     private Button mBtnSearch;
     private ListView mLvResult;
+    private DeviceAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements SerachEventCallba
         bindService(intent, mPlayServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
+    ProgressDialog progressBar;
+
     @Override
     public void onEvent(Integer integer) {
         switch (integer) {
@@ -63,17 +68,27 @@ public class MainActivity extends AppCompatActivity implements SerachEventCallba
                 bindService();
                 break;
             case SerachEventCallback.StartSearch:
-                Log.d(TAG, "onEvent: 开始广播搜索");
+                Log.d(TAG, "onEvent: 开始广播搜索"+Thread.currentThread().getName());
+                if(adapter!=null){
+                    adapter.notifyDataSetChanged();
+                }
+                if (progressBar==null){
+                    progressBar=new ProgressDialog(this);
+                    progressBar.setMessage("正在搜索...");
+                }
+                progressBar.show();
                 break;
-
             case SerachEventCallback.EndSearch:
                 Log.d(TAG, "onEvent: 结束广播搜索" + playService.getResults().size());
                 if (playService.getResults().size() > 0) {
-                    DeviceAdapter adapter = new DeviceAdapter(this, playService.getResults());
+                    adapter = new DeviceAdapter(this, playService.getResults());
                     mLvResult.setAdapter(adapter);
+                    Toast.makeText(this,"搜索结束",Toast.LENGTH_SHORT).show();
+
                 } else {
                     Toast.makeText(this,"没有找到可用设备",Toast.LENGTH_SHORT).show();
                 }
+                progressBar.cancel();
                 break;
             case SerachEventCallback.Searching:
                 Log.d(TAG, "onEvent: 正在广播搜索");

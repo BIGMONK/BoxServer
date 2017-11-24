@@ -155,22 +155,22 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
                     Log.d(TAG, "onReceive: " + msg);
                     int flag = intent.getIntExtra("flag", -1);
                     switch (flag) {
-                        case TcpClientRunnable.StartConnect:
+                        case ConstantConfig.StartConnect:
                             Log.d(TAG, "onReceive: 开始连接设备");
                             showToast("开始连接设备");
                             break;
-                        case TcpClientRunnable.SuccessConnected:
+                        case ConstantConfig.SuccessConnected:
                             Log.d(TAG, "onReceive: 设备连接成功");
                             showToast("设备连接成功");
                             break;
-                        case TcpClientRunnable.FailedConnected:
+                        case ConstantConfig.FailedConnected:
                             Log.d(TAG, "onReceive: 设备连接失败");
                             showToast("设备连接失败");
                             break;
-                        case TcpClientRunnable.Connecting:
+                        case ConstantConfig.Connecting:
                             Log.d(TAG, "onReceive: 收到消息");
                             break;
-                        case TcpClientRunnable.Disconnected:
+                        case ConstantConfig.Disconnected:
                             Log.d(TAG, "onReceive: 连接已断开");
                             showToast("连接已断开");
                             break;
