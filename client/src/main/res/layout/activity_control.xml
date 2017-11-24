@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.youtu.djf.client.ControlActivity">
+
+    <TextView
+        android:id="@+id/tv_hello"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!" />
+
+    <Button
+        android:id="@+id/btn_connect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/tv_hello"
+        android:text="连接"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/btn_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="@android:string/ok" />
+
+    <Button
+        android:id="@+id/btn_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_ok"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="14dp"
+        android:text="下" />
+
+    <Button
+        android:id="@+id/btn_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_ok"
+        android:layout_alignLeft="@+id/btn_ok"
+        android:layout_alignStart="@+id/btn_ok"
+        android:layout_marginBottom="19dp"
+        android:text="上" />
+
+    <Button
+        android:id="@+id/btn_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_toLeftOf="@+id/btn_ok"
+        android:layout_toStartOf="@+id/btn_ok"
+        android:text="左" />
+
+    <Button
+        android:id="@+id/btn_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_up"
+        android:layout_marginLeft="19dp"
+        android:layout_marginStart="19dp"
+        android:layout_toEndOf="@+id/btn_ok"
+        android:layout_toRightOf="@+id/btn_ok"
+        android:text="右" />
+
+    <Button
+        android:id="@+id/btn_volinc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btn_up"
+        android:layout_alignBottom="@+id/btn_up"
+        android:layout_marginLeft="17dp"
+        android:layout_toEndOf="@+id/btn_up"
+        android:text="V+"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/btn_voldec"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btn_up"
+        android:layout_alignBottom="@+id/btn_up"
+        android:layout_alignStart="@+id/btn_left"
+        android:text="V-"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/btn_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/btn_down"
+        android:layout_alignStart="@+id/btn_left"
+        android:text="Home" />
+
+    <Button
+        android:id="@+id/btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/btn_right"
+        android:layout_alignTop="@+id/btn_down"
+        android:text="Back" />
+
+
+</RelativeLayout>
