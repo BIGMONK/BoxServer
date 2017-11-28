@@ -10,6 +10,7 @@ import android.view.KeyEvent;
 import com.djf.remotecontrol.CommandMsgBean;
 import com.djf.remotecontrol.ConstantConfig;
 import com.djf.remotecontrol.DeviceUtils;
+import com.djf.remotecontrol.LogUtils;
 import com.djf.remotecontrol.NetworkUtils;
 import com.google.gson.GsonBuilder;
 
@@ -31,7 +32,6 @@ public class TVService extends Service {
 
     public TVService() {
     }
-
     @Override
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
@@ -43,6 +43,7 @@ public class TVService extends Service {
         super.onCreate();
         listenSoketOpen();
     }
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -81,21 +82,22 @@ public class TVService extends Service {
                     mListenerSocket = new DatagramSocket(ConstantConfig.broadcastPort);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Log.e(TAG, "new DatagramSocket() err!");
+                    LogUtils.e(TAG, "new DatagramSocket() err!");
                     return;
                 }
                 while (true) {
                     try {
                         DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-                        Log.d(TAG, "listenSoketOpen receive");
+                        LogUtils.d(TAG, "listenSoketOpen receive");
                         mListenerSocket.receive(packet);
                         InetAddress address = packet.getAddress();
                         String result = new String(packet.getData(), packet.getOffset(), packet.getLength());
-                        Log.d(TAG, "收到客户端广播数据：" + result + "----" + packet.getSocketAddress());
-                        if (result.startsWith("call remote")) {
+                        LogUtils.d(TAG, "收到客户端广播数据：" + result + "----" + packet.getSocketAddress());
+                        if (result.startsWith(ConstantConfig.UDPBroadcastTAG)) {
+                            //服务端收到广播数据之后回复服务端信息
                             String mDeviceName =  new GsonBuilder().create().toJson(
                                     new CommandMsgBean( CommandMsgBean.DEVICE
-                                            , 0
+                                            , -1
                                             , Build.MODEL, DeviceUtils.getMacAddress()
                                             , NetworkUtils.getIPAddress(true)
                                     )
@@ -104,9 +106,9 @@ public class TVService extends Service {
                                     mDeviceName.getBytes().length,
                                     address, packet.getPort());
                             mListenerSocket.send(packet);
-                            Log.d(TAG, "响应客户端广播数据："+new String(packet.getData(), packet.getOffset(), packet.getLength()));
+                            LogUtils.d(TAG, "响应客户端广播数据："+new String(packet.getData(), packet.getOffset(), packet.getLength()));
                         } else {
-                            Log.e(TAG, "not is remoteServiec ! err!");
+                            LogUtils.e(TAG, "not is remoteServiec ! err!");
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -114,5 +116,13 @@ public class TVService extends Service {
                 }
             }
         });
+    }
+
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        cachedThreadPool.shutdownNow();
     }
 }

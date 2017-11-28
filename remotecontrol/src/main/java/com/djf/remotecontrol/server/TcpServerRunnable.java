@@ -1,10 +1,10 @@
 package com.djf.remotecontrol.server;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.djf.remotecontrol.CommandMsgBean;
-import com.djf.remotecontrol.Utils;
+import com.djf.remotecontrol.LogUtils;
+import com.djf.remotecontrol.RemoteUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,7 +51,7 @@ public class TcpServerRunnable implements Runnable {
             if (serverSocket != null)
                 serverSocket.close();
         } catch (IOException e) {
-            Log.d(TAG, "TcpServerRunnable closeSelf Runable："
+            LogUtils.d(TAG, "TcpServerRunnable closeSelf Runable："
                     + this.toString()
                     + "  IOException：" + e.toString());
             e.printStackTrace();
@@ -63,7 +63,7 @@ public class TcpServerRunnable implements Runnable {
         try {
             return serverSocket.accept();
         } catch (IOException e) {
-            Log.d(TAG, "遥控器接入监听异常TcpServerRunnable run getSocket ：" + this.toString()
+            LogUtils.d(TAG, "遥控器接入监听异常TcpServerRunnable run getSocket ：" + this.toString()
                     + "  serverSocket：" + serverSocket.toString()
                     + "  IOException：" + e.toString());
             e.printStackTrace();
@@ -77,7 +77,7 @@ public class TcpServerRunnable implements Runnable {
             serverSocket = new ServerSocket(port);
             serverSocket.setSoTimeout(30000);
             while (isListen) {
-                Log.i(TAG, "遥控器接入监听开始：" + this.toString()
+                LogUtils.i(TAG, "遥控器接入监听开始：" + this.toString()
                         + "  serverSocket=" + serverSocket.toString());
                 Socket socket = getSocket(serverSocket);
                 if (socket != null) {
@@ -86,7 +86,7 @@ public class TcpServerRunnable implements Runnable {
             }
             serverSocket.close();
         } catch (Exception e) {
-            Log.d(TAG, "遥控器接入监听异常：" + this.toString()
+            LogUtils.d(TAG, "遥控器接入监听异常：" + this.toString()
                     + "  Exception：" + e.toString());
             e.printStackTrace();
             if (serverSocket != null) {
@@ -115,7 +115,7 @@ public class TcpServerRunnable implements Runnable {
         ServerSocketThread(Socket socket) {
             this.socket = socket;
             ip = socket.getInetAddress().toString();
-            Log.d(TAG, "ServerSocketThread:检测到新的客户端联入,ip:" + ip + "  "
+            LogUtils.d(TAG, "ServerSocketThread:检测到新的客户端联入,ip:" + ip + "  "
                     + "  socket=" + socket.toString()
                     + this.toString()
             );
@@ -128,7 +128,7 @@ public class TcpServerRunnable implements Runnable {
                 start();
             } catch (SocketException e) {
                 e.printStackTrace();
-                Log.d(TAG, "ServerSocketThread  SocketException "
+                LogUtils.d(TAG, "ServerSocketThread  SocketException "
                         + this.toString()
                         + "  socket=" + socket.toString()
                         + "  " + e.toString()
@@ -136,7 +136,7 @@ public class TcpServerRunnable implements Runnable {
 
             } catch (IOException e) {
                 e.printStackTrace();
-                Log.d(TAG, "ServerSocketThread  IOException "
+                LogUtils.d(TAG, "ServerSocketThread  IOException "
                         + this.toString()
                         + "  socket=" + socket.toString()
                         + "  " + e.toString());
@@ -158,43 +158,42 @@ public class TcpServerRunnable implements Runnable {
             SST.add(this);
             while (isRun && is != null) {
                 try {
-                    Log.d(TAG, "ServerSocketThread run: read before");
+                    LogUtils.d(TAG, "ServerSocketThread run: read before");
                     if ((rcvLen = is.read(buff)) != -1) {
                         rcvMsg = new String(buff, 0, rcvLen, "utf-8").trim();
-                        Log.i(TAG, "ServerSocketThread run:收到消息:" + rcvMsg);
-                        if (Utils.isGoodJson(rcvMsg)) {
-                            CommandMsgBean bean = Utils.getObject(rcvMsg, CommandMsgBean.class);
+                        LogUtils.i(TAG, "ServerSocketThread run:收到消息:" + rcvMsg);
+                        if (RemoteUtils.isGoodJson(rcvMsg)) {
+                            CommandMsgBean bean = RemoteUtils.getObject(rcvMsg, CommandMsgBean.class);
                             switch (bean.getType()) {
                                 case CommandMsgBean.KEYEVENT:
-                                    Utils.simulateKey(bean.getType(), bean.getKeycode());
+                                    RemoteUtils.simulateKey(bean.getType(), bean.getKeycode());
                                 case CommandMsgBean.TEXT:
                                     break;
                                 case CommandMsgBean.DEVICE:
-                                    serverDevice = Utils.getObject(rcvMsg, CommandMsgBean.class);
+                                    serverDevice = RemoteUtils.getObject(rcvMsg, CommandMsgBean.class);
                                     if (serverDevice != null && !TextUtils.isEmpty(serverDevice.getDevice())) {
-                                        Log.d(TAG, "遥控:" + serverDevice.getDevice()+":"+serverDevice.getMac() + "已连接");
+                                        LogUtils.d(TAG, "遥控:" + serverDevice.getDevice() + "-->" + serverDevice.getMac() + "已连接");
                                     }
                                     break;
                                 case CommandMsgBean.OTHER:
-                                    break;                            }
+                                    break;
+                            }
                         } else {
-                            Log.i(TAG, "ServerSocketThread run:收到未识别消息:" + rcvMsg);
+                            LogUtils.i(TAG, "ServerSocketThread run:收到未识别消息:" + rcvMsg);
                         }
                     } else {
-                        Log.i(TAG, "ServerSocketThread run: 客户端关闭时read不阻塞 read返回-1  "
+                        LogUtils.i(TAG, "ServerSocketThread run: 客户端关闭时read不阻塞 read返回-1  "
                                 + "  rcvLen=" + rcvLen
                                 + "  is=" + is.toString());
                         isRun = false;
                     }
                 } catch (Exception e) {
-                    Log.d(TAG, "远程命令执行线程ServerSocketThread:" + this.toString()
+                    LogUtils.d(TAG, "远程命令执行线程ServerSocketThread:" + this.toString()
                             + "   run Exception：" + e.toString()
                             + "  socket=" + socket.toString());
                     e.printStackTrace();
                 }
             }
-
-
             try {
                 if (is != null)
                     is.close();
@@ -211,18 +210,15 @@ public class TcpServerRunnable implements Runnable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
             try {
                 if (socket != null)
                     socket.close();
                 SST.remove(this);
-                Log.i(TAG, "run: 断开连接 " + this.toString());
-                Log.d(TAG, "遥控:" + serverDevice.getDevice() + "已断开");
+                LogUtils.i(TAG, "run: 断开连接 " + this.toString());
+                LogUtils.d(TAG, "遥控:" + serverDevice.getDevice() + "已断开");
             } catch (IOException e) {
-                Log.d(TAG, "远程命令执行线程关闭连接ServerSocketThread:" + this.toString()
-                        + "   run Exception：" + e.toString()
-                );
+                LogUtils.d(TAG, "远程命令执行线程关闭连接ServerSocketThread:" + this.toString()
+                        + "   run Exception：" + e.toString());
                 e.printStackTrace();
             }
         }

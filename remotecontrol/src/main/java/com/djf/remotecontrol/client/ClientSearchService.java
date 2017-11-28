@@ -7,11 +7,11 @@ import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.djf.remotecontrol.CommandMsgBean;
 import com.djf.remotecontrol.ConstantConfig;
-import com.djf.remotecontrol.Utils;
+import com.djf.remotecontrol.LogUtils;
+import com.djf.remotecontrol.RemoteUtils;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -115,7 +115,7 @@ public class ClientSearchService extends Service {
 
     private void sendUDPBroadcast(List<CommandMsgBean> results) {
         keys.clear();
-        Log.d(TAG, "sendUDPBroadcast: 开始" + System.currentTimeMillis());
+        LogUtils.d(TAG, "sendUDPBroadcast: 开始" + System.currentTimeMillis());
         int i = 0, period = 3000, times = 5;
         DatagramSocket socket = null;
         try {
@@ -127,7 +127,7 @@ public class ClientSearchService extends Service {
             socket.setSoTimeout(period);
             if (searchPacket == null) {
                 InetAddress address = InetAddress.getByName("255.255.255.255");
-                String string = "call remote from device:" + android.os.Build.MODEL;
+                String string = ConstantConfig.UDPBroadcastTAG+"from device:" + android.os.Build.MODEL;
                 byte[] data = string.getBytes();
                 searchPacket = new DatagramPacket(data, data.length, address, broadcastPort);
             }
@@ -142,13 +142,14 @@ public class ClientSearchService extends Service {
             i++;
             DatagramPacket packet_re = new DatagramPacket(data, data.length);
             try {
-                Log.e(TAG, ">>>receive_packet_begin");
+                LogUtils.e(TAG, ">>>receive_packet_begin");
                 socket.receive(packet_re);
-                Log.e(TAG, ">>>receive_packet_end");
+                LogUtils.e(TAG, ">>>receive_packet_end");
                 String result = new String(packet_re.getData(), packet_re.getOffset(), packet_re.getLength());
-                Log.v(TAG, "result--->" + result);
-                if (Utils.isGoodJson(result)) {
-                    CommandMsgBean serverDevice = Utils.getObject(result, CommandMsgBean.class);
+                LogUtils.v(TAG, "result--->" + result);
+                //等待接受广播响应信息
+                if (RemoteUtils.isGoodJson(result)) {
+                    CommandMsgBean serverDevice = RemoteUtils.getObject(result, CommandMsgBean.class);
                     if (serverDevice != null && serverDevice.getDevice() != null) {
                         serverDevice.setIp(packet_re.getAddress().getHostAddress());
                         if (!keys.contains(serverDevice.getIp())) {
@@ -167,7 +168,7 @@ public class ClientSearchService extends Service {
         }
         if (socket != null)
             socket.close();
-        Log.d(TAG, "sendUDPBroadcast: 结束" + System.currentTimeMillis());
+        LogUtils.d(TAG, "sendUDPBroadcast: 结束" + System.currentTimeMillis());
     }
 
 }

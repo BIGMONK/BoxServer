@@ -3,13 +3,13 @@ package com.djf.remotecontrol.client;
 import android.content.Intent;
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.djf.remotecontrol.CommandMsgBean;
 import com.djf.remotecontrol.ConstantConfig;
 import com.djf.remotecontrol.DeviceUtils;
+import com.djf.remotecontrol.LogUtils;
 import com.djf.remotecontrol.NetworkUtils;
-import com.djf.remotecontrol.Utils;
+import com.djf.remotecontrol.RemoteUtils;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -77,7 +77,7 @@ public class TcpClientRunnable implements Runnable {
             pw.println(msg);
             pw.flush();
         } else {
-            Log.d(TAG, "send: socket 未连接");
+            LogUtils.d(TAG, "send: socket 未连接");
         }
     }
 
@@ -97,7 +97,7 @@ public class TcpClientRunnable implements Runnable {
             intent.putExtra("tcpClientReceiver", "正在连接服务器:" + serverIP + ":" + serverPort
                     + "…" + new Date().toString());
             intent.putExtra("flag", ConstantConfig.StartConnect);
-            Utils.getmContext().sendBroadcast(intent);//将消息发送给主界面
+            RemoteUtils.getmContext().sendBroadcast(intent);//将消息发送给主界面
             isWhile = true;
             try {
                 socket = new Socket(serverIP, serverPort);
@@ -110,12 +110,12 @@ public class TcpClientRunnable implements Runnable {
                         + serverPort + "…" + new Date().toString());
                 intent.putExtra("flag", SuccessConnected);
 
-                Utils.getmContext().sendBroadcast(intent);//将消息发送给主界面
-                Log.d(TAG, "run: 连接服务器成功" + socket.toString()
+                RemoteUtils.getmContext().sendBroadcast(intent);//将消息发送给主界面
+                LogUtils.d(TAG, "run: 连接服务器成功" + socket.toString()
                         + "  " + socket.getRemoteSocketAddress().toString());
                 pw = new PrintWriter(socket.getOutputStream(), true);
                 //连接成功之后立即给服务器发送一条设备消息
-                send(Utils.getStringFromJson(
+                send(RemoteUtils.getStringFromJson(
                         new CommandMsgBean(CommandMsgBean.DEVICE
                                 , 0
                                 , Build.MODEL, DeviceUtils.getMacAddress()
@@ -126,7 +126,7 @@ public class TcpClientRunnable implements Runnable {
                 dis = new DataInputStream(is);
             } catch (ConnectException e) {
                 e.printStackTrace();
-                Log.d(TAG, "run: 连接服务器失败:" + serverIP + ":"
+                LogUtils.d(TAG, "run: 连接服务器失败:" + serverIP + ":"
                         + serverPort + "…" + this.toString()
                         + "  " + e.toString());
                 if (intent == null) {
@@ -137,7 +137,7 @@ public class TcpClientRunnable implements Runnable {
                         + serverPort + "…"+ new Date().toString());
                 intent.putExtra("flag",  ConstantConfig.FailedConnected);
 
-                Utils.getmContext().sendBroadcast(intent);//将消息发送给主界面
+                RemoteUtils.getmContext().sendBroadcast(intent);//将消息发送给主界面
                 try {
                     Thread.sleep(5000);//重新创建socke的时间间隔
                 } catch (InterruptedException e1) {
@@ -157,16 +157,16 @@ public class TcpClientRunnable implements Runnable {
                 rcvLen = dis.read(buff);
                 if (rcvLen > 0) {
                     rcvMsg = new String(buff, 0, rcvLen, "utf-8");
-                    Log.d(TAG, "run: 收到消息: rcvLen=" + rcvLen + "   rcvMsg=" + rcvMsg + "  " + dis.toString());
+                    LogUtils.d(TAG, "run: 收到消息: rcvLen=" + rcvLen + "   rcvMsg=" + rcvMsg + "  " + dis.toString());
                     if (intent == null) {
                         intent = new Intent();
                         intent.setAction("tcpClientReceiver");
                     }
                     intent.putExtra("tcpClientReceiver", rcvMsg);
                     intent.putExtra("flag",  ConstantConfig.Connecting);
-                    Utils.getmContext().sendBroadcast(intent);//将消息发送给主界面
+                    RemoteUtils.getmContext().sendBroadcast(intent);//将消息发送给主界面
                 } else {
-                    Log.i(TAG, "run: 收到消息:服务器关闭时read不阻塞 read返回-1  "
+                    LogUtils.i(TAG, "run: 收到消息:服务器关闭时read不阻塞 read返回-1  "
                             + "  rcvLen=" + rcvLen
                             + "  dis=" + dis.toString()
                             + "  is=" + is.toString()
@@ -177,7 +177,7 @@ public class TcpClientRunnable implements Runnable {
                     }
                     intent.putExtra("tcpClientReceiver", "服务器已断开");
                     intent.putExtra("flag",  ConstantConfig.Disconnected);
-                    Utils.getmContext().sendBroadcast(intent);//将消息发送给主界面
+                    RemoteUtils.getmContext().sendBroadcast(intent);//将消息发送给主界面
                     isWhile = false;
                     Thread.sleep(50);
                     createSocket();
@@ -185,25 +185,25 @@ public class TcpClientRunnable implements Runnable {
 
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
-                Log.d(TAG, "run: " + this.toString()
+                LogUtils.d(TAG, "run: " + this.toString()
                         + "  dis=" + dis.toString()
                         + "  UnsupportedEncodingException=" + e.toString()
                 );
             } catch (InterruptedException e) {
                 e.printStackTrace();
-                Log.d(TAG, "run: " + this.toString()
+                LogUtils.d(TAG, "run: " + this.toString()
                         + "  dis=" + dis.toString()
                         + "  InterruptedException=" + e.toString());
             } catch (SocketTimeoutException e) {
                 e.printStackTrace();
-                Log.d(TAG, "run: " + this.toString()
+                LogUtils.d(TAG, "run: " + this.toString()
                         + "  dis=" + dis.toString()
                         + "  SocketTimeoutException=" + e.toString()
                         + "  e.getCause()=" + e.getCause()
                         + "  e.getMessage()=" + e.getMessage());
             } catch (SocketException e) {
                 e.printStackTrace();
-                Log.d(TAG, "run: " + this.toString()
+                LogUtils.d(TAG, "run: " + this.toString()
                         + "  dis=" + dis.toString()
                         + "  SocketException=" + e.toString()
                         + "  e.getCause()=" + e.getCause()
@@ -217,12 +217,12 @@ public class TcpClientRunnable implements Runnable {
                         intent.setAction("tcpClientReceiver");
                     }
                     intent.putExtra("tcpClientReceiver", "客户端已断开连接");
-                    Utils.getmContext().sendBroadcast(intent);//将消息发送给主界面
+                    RemoteUtils.getmContext().sendBroadcast(intent);//将消息发送给主界面
                 }
 
             } catch (IOException e) {
                 e.printStackTrace();
-                Log.d(TAG, "run: " + this.toString()
+                LogUtils.d(TAG, "run: " + this.toString()
                         + "  dis=" + dis.toString()
                         + "  IOException=" + e.toString());
             }

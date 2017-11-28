@@ -8,7 +8,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -16,7 +15,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.djf.remotecontrol.Utils;
+import com.djf.remotecontrol.LogUtils;
+import com.djf.remotecontrol.RemoteUtils;
 import com.djf.remotecontrol.client.ClientSearchService;
 import com.djf.remotecontrol.client.DeviceAdapter;
 import com.djf.remotecontrol.client.SerachEventCallback;
@@ -59,11 +59,11 @@ public class MainActivity extends AppCompatActivity implements SerachEventCallba
     public void onEvent(Integer integer) {
         switch (integer) {
             case SerachEventCallback.ServiceStart:
-                Log.d(TAG, "onEvent: " + "服务启动");
+                LogUtils.d(TAG, "onEvent: " + "服务启动");
                 bindService();
                 break;
             case SerachEventCallback.StartSearch:
-                Log.d(TAG, "onEvent: 开始广播搜索"+Thread.currentThread().getName());
+                LogUtils.d(TAG, "onEvent: 开始广播搜索"+Thread.currentThread().getName());
                 if(adapter!=null){
                     adapter.notifyDataSetChanged();
                 }
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements SerachEventCallba
                 progressBar.show();
                 break;
             case SerachEventCallback.EndSearch:
-                Log.d(TAG, "onEvent: 结束广播搜索" + playService.getResults().size());
+                LogUtils.d(TAG, "onEvent: 结束广播搜索" + playService.getResults().size());
                 if (playService.getResults().size() > 0) {
                     adapter = new DeviceAdapter(this, playService.getResults());
                     mLvResult.setAdapter(adapter);
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements SerachEventCallba
                 progressBar.cancel();
                 break;
             case SerachEventCallback.Searching:
-                Log.d(TAG, "onEvent: 正在广播搜索");
+                LogUtils.d(TAG, "onEvent: 正在广播搜索");
 
                 break;
         }
@@ -109,10 +109,8 @@ public class MainActivity extends AppCompatActivity implements SerachEventCallba
             case R.id.btn_search:
                 if (playService != null) {
                     String name = playService.getClass().getName();
-                    Log.d(TAG, "onClick: " + name);
-                    //com.djf.remotecontrol.client.ClientSearchService
-                    //com.youtu.djf.client.ClientSearchService
-                    if (!Utils.isServiceRunning(this, name)) {
+                    LogUtils.d(TAG, "onClick: " + name);
+                    if (!RemoteUtils.isServiceRunning(this, name)) {
                         startSearchService(this, this);
                     } else {
                         playService.searchDevices();
@@ -126,10 +124,10 @@ public class MainActivity extends AppCompatActivity implements SerachEventCallba
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        playService.stopSelf();
         Intent intent = new Intent(this, ControlActivity.class);
         intent.putExtra("ip", playService.getResults().get(position).getIp());
         startActivity(intent);
-
     }
 
 
@@ -138,8 +136,8 @@ public class MainActivity extends AppCompatActivity implements SerachEventCallba
         public void onServiceConnected(ComponentName name, IBinder service) {
             playService = ((ClientSearchService.PlayBinder) service).getService();
             if (playService != null) {
-                Log.d(TAG, "onServiceConnected: 获取服务成功");
-                Utils.setSearchService(playService);
+                LogUtils.d(TAG, "onServiceConnected: 获取服务成功");
+                RemoteUtils.setSearchService(playService);
             }
         }
 

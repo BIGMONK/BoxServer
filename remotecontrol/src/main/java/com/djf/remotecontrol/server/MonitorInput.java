@@ -6,10 +6,8 @@ import android.view.InputEvent;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
-import com.djf.remotecontrol.Utils;
+import com.djf.remotecontrol.RemoteUtils;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 
 /**
@@ -65,7 +63,7 @@ public class MonitorInput {
             return;
         } catch (InterruptedException localInterruptedException) {
             localInterruptedException.printStackTrace();
-            Utils.execShellCmd("input keyevent " + paramInt);
+            RemoteUtils.execShellCmd("input keyevent " + paramInt);
         }
     }
 

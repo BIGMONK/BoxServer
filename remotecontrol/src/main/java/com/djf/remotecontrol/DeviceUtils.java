@@ -57,7 +57,7 @@ public class DeviceUtils {
      */
     @SuppressLint("HardwareIds")
     public static String getAndroidID() {
-        return Settings.Secure.getString(Utils.getmContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        return Settings.Secure.getString(RemoteUtils.getmContext().getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
     /**
@@ -93,7 +93,7 @@ public class DeviceUtils {
     private static String getMacAddressByWifiInfo() {
         try {
             @SuppressLint("WifiManagerLeak")
-            WifiManager wifi = (WifiManager) Utils.getmContext().getSystemService(Context.WIFI_SERVICE);
+            WifiManager wifi = (WifiManager) RemoteUtils.getmContext().getSystemService(Context.WIFI_SERVICE);
             if (wifi != null) {
                 WifiInfo info = wifi.getConnectionInfo();
                 if (info != null) return info.getMacAddress();
@@ -187,7 +187,7 @@ public class DeviceUtils {
         Intent intent = new Intent("android.intent.action.ACTION_REQUEST_SHUTDOWN");
         intent.putExtra("android.intent.extra.KEY_CONFIRM", false);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Utils.getmContext().startActivity(intent);
+        RemoteUtils.getmContext().startActivity(intent);
     }
 
     /**
@@ -200,7 +200,7 @@ public class DeviceUtils {
         intent.putExtra("nowait", 1);
         intent.putExtra("interval", 1);
         intent.putExtra("window", 0);
-        Utils.getmContext().sendBroadcast(intent);
+        RemoteUtils.getmContext().sendBroadcast(intent);
     }
 
     /**
@@ -210,7 +210,7 @@ public class DeviceUtils {
      * @param reason 传递给内核来请求特殊的引导模式，如"recovery"
      */
     public static void reboot(final String reason) {
-        PowerManager mPowerManager = (PowerManager) Utils.getmContext().getSystemService(Context.POWER_SERVICE);
+        PowerManager mPowerManager = (PowerManager) RemoteUtils.getmContext().getSystemService(Context.POWER_SERVICE);
         try {
             mPowerManager.reboot(reason);
         } catch (Exception e) {
