@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -14,8 +15,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.djf.remotecontrol.ConstantConfig;
+import com.djf.remotecontrol.DeviceUtils;
+import com.djf.remotecontrol.NetworkUtils;
 import com.djf.remotecontrol.Utils;
 import com.djf.remotecontrol.client.TcpClientRunnable;
+import com.djf.remotecontrol.CommandMsgBean;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -98,47 +102,73 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.btn_ok:
 //                Utils.execShellCmd(KeyEvent.KEYCODE_DPAD_CENTER + "");
                 if (tcpClient != null) {
-                    tcpClient.send(KeyEvent.KEYCODE_DPAD_CENTER + "");
+                    tcpClient.send(Utils.getStringFromJson(
+                            new CommandMsgBean( CommandMsgBean.KEYEVENT
+                            , KeyEvent.KEYCODE_DPAD_CENTER
+                            , Build.MODEL, DeviceUtils.getMacAddress()
+                            , NetworkUtils.getIPAddress(true)
+                    )));
                 }
                 break;
             case R.id.btn_down:
 //                Utils.execShellCmd(KeyEvent.KEYCODE_DPAD_DOWN + "");
                 if (tcpClient != null) {
-                    tcpClient.send(KeyEvent.KEYCODE_DPAD_DOWN + "");
+                    tcpClient.send(Utils.getStringFromJson(
+                            new CommandMsgBean(CommandMsgBean.KEYEVENT
+                                    , KeyEvent.KEYCODE_DPAD_DOWN
+                                    , Build.MODEL, DeviceUtils.getMacAddress()
+                                    , NetworkUtils.getIPAddress(true)
+                            )));
                 }
                 break;
             case R.id.btn_up:
-//                Utils.execShellCmd(KeyEvent.KEYCODE_DPAD_UP + "");
                 if (tcpClient != null) {
-                    tcpClient.send(KeyEvent.KEYCODE_DPAD_UP + "");
+                    tcpClient.send(Utils.getStringFromJson(
+                            new CommandMsgBean(CommandMsgBean.KEYEVENT
+                                    , KeyEvent.KEYCODE_DPAD_UP
+                                    , Build.MODEL, DeviceUtils.getMacAddress()
+                                    , NetworkUtils.getIPAddress(true)
+                            )));
                 }
                 break;
             case R.id.btn_left:
-//                Utils.execShellCmd(KeyEvent.KEYCODE_DPAD_LEFT + "");
                 if (tcpClient != null) {
-                    tcpClient.send(KeyEvent.KEYCODE_DPAD_LEFT + "");
+                    tcpClient.send(Utils.getStringFromJson(
+                            new CommandMsgBean(CommandMsgBean.KEYEVENT
+                                    , KeyEvent.KEYCODE_DPAD_LEFT
+                                    , Build.MODEL, DeviceUtils.getMacAddress()
+                                    , NetworkUtils.getIPAddress(true)
+                            )));
                 }
                 break;
             case R.id.btn_right:
-//                Utils.execShellCmd(KeyEvent.KEYCODE_DPAD_RIGHT + "");
                 if (tcpClient != null) {
-                    tcpClient.send(KeyEvent.KEYCODE_DPAD_RIGHT + "");
+                    tcpClient.send(Utils.getStringFromJson(
+                            new CommandMsgBean(CommandMsgBean.KEYEVENT
+                                    , KeyEvent.KEYCODE_DPAD_RIGHT
+                                    , Build.MODEL, DeviceUtils.getMacAddress()
+                                    , NetworkUtils.getIPAddress(true)
+                            )));
                 }
                 break;
-            case R.id.btn_volinc:
-                break;
-            case R.id.btn_voldec:
-                break;
             case R.id.btn_home:
-//                Utils.execShellCmd(KeyEvent.KEYCODE_HOME + "");
                 if (tcpClient != null) {
-                    tcpClient.send(KeyEvent.KEYCODE_HOME + "");
+                    tcpClient.send(Utils.getStringFromJson(
+                            new CommandMsgBean( CommandMsgBean.KEYEVENT
+                                    , KeyEvent.KEYCODE_HOME
+                                    , Build.MODEL, DeviceUtils.getMacAddress()
+                                    , NetworkUtils.getIPAddress(true)
+                            )));
                 }
                 break;
             case R.id.btn_back:
-                Utils.execShellCmd(KeyEvent.KEYCODE_BACK + "");
                 if (tcpClient != null) {
-                    tcpClient.send(KeyEvent.KEYCODE_BACK + "");
+                    tcpClient.send(Utils.getStringFromJson(
+                            new CommandMsgBean(CommandMsgBean.KEYEVENT
+                                    , KeyEvent.KEYCODE_BACK
+                                    , Build.MODEL, DeviceUtils.getMacAddress()
+                                    , NetworkUtils.getIPAddress(true)
+                            )));
                 }
                 break;
         }
@@ -181,6 +211,7 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     Toast mToast;
+
     private void showToast(String msg) {
         if (mToast == null) {
             mToast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);

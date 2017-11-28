@@ -6,9 +6,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.djf.remotecontrol.ServerDevice;
-
-import org.w3c.dom.Text;
+import com.djf.remotecontrol.CommandMsgBean;
 
 import java.util.List;
 
@@ -17,10 +15,10 @@ import java.util.List;
  */
 
 public class DeviceAdapter extends BaseAdapter {
-    private List<ServerDevice> datas;
+    private List<CommandMsgBean> datas;
     private Context context;
 
-    public DeviceAdapter( Context context,List<ServerDevice> datas) {
+    public DeviceAdapter( Context context,List<CommandMsgBean> datas) {
         this.datas = datas;
         this.context = context;
     }

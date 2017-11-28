@@ -11,20 +11,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.djf.remotecontrol.ServerDevice;
 import com.djf.remotecontrol.Utils;
 import com.djf.remotecontrol.client.ClientSearchService;
 import com.djf.remotecontrol.client.DeviceAdapter;
 import com.djf.remotecontrol.client.SerachEventCallback;
-import com.djf.remotecontrol.client.TcpClientRunnable;
 
 public class MainActivity extends AppCompatActivity implements SerachEventCallback<Integer>, View.OnClickListener, AdapterView.OnItemClickListener {
     private static final String TAG = "MainActivity";

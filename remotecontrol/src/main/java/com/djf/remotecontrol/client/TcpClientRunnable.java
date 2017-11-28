@@ -5,8 +5,10 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.djf.remotecontrol.CommandMsgBean;
 import com.djf.remotecontrol.ConstantConfig;
-import com.djf.remotecontrol.ServerDevice;
+import com.djf.remotecontrol.DeviceUtils;
+import com.djf.remotecontrol.NetworkUtils;
 import com.djf.remotecontrol.Utils;
 
 import java.io.DataInputStream;
@@ -21,10 +23,6 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Date;
 
-import static com.djf.remotecontrol.ConstantConfig.Connecting;
-import static com.djf.remotecontrol.ConstantConfig.Disconnected;
-import static com.djf.remotecontrol.ConstantConfig.FailedConnected;
-import static com.djf.remotecontrol.ConstantConfig.StartConnect;
 import static com.djf.remotecontrol.ConstantConfig.SuccessConnected;
 
 
@@ -117,7 +115,13 @@ public class TcpClientRunnable implements Runnable {
                         + "  " + socket.getRemoteSocketAddress().toString());
                 pw = new PrintWriter(socket.getOutputStream(), true);
                 //连接成功之后立即给服务器发送一条设备消息
-                send(Utils.getStringFromJson(new ServerDevice(Build.MODEL,null,null)));
+                send(Utils.getStringFromJson(
+                        new CommandMsgBean(CommandMsgBean.DEVICE
+                                , 0
+                                , Build.MODEL, DeviceUtils.getMacAddress()
+                                , NetworkUtils.getIPAddress(true)
+                        )
+                ));
                 is = socket.getInputStream();
                 dis = new DataInputStream(is);
             } catch (ConnectException e) {

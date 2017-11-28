@@ -11,7 +11,7 @@ public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "onReceive: 收到开机广播");
-        if (("rk3288").equals(Build.DEVICE)) {
+        if (("rk3288").equals(Build.MODEL)) {
             Intent intent1 = new Intent(context, TVService.class);
             context.startService(intent1);
         }

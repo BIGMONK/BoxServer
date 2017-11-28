@@ -9,8 +9,8 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.djf.remotecontrol.CommandMsgBean;
 import com.djf.remotecontrol.ConstantConfig;
-import com.djf.remotecontrol.ServerDevice;
 import com.djf.remotecontrol.Utils;
 
 import java.io.IOException;
@@ -60,9 +60,9 @@ public class ClientSearchService extends Service {
     }
 
     private boolean isSearching;
-    List<ServerDevice> results = new ArrayList<>();
+    List<CommandMsgBean> results = new ArrayList<>();
 
-    public List<ServerDevice> getResults() {
+    public List<CommandMsgBean> getResults() {
         return results;
     }
 
@@ -72,7 +72,7 @@ public class ClientSearchService extends Service {
                 mCallback.onEvent(SerachEventCallback.Searching);//正在扫描
             }
         } else {
-            new AsyncTask<Void, Void, List<ServerDevice>>() {
+            new AsyncTask<Void, Void, List<CommandMsgBean>>() {
                 @Override
                 protected void onPreExecute() {
                     super.onPreExecute();
@@ -84,14 +84,14 @@ public class ClientSearchService extends Service {
                 }
 
                 @Override
-                protected List<ServerDevice> doInBackground(Void... params) {
+                protected List<CommandMsgBean> doInBackground(Void... params) {
                     sendUDPBroadcast(results);
                     publishProgress();
                     return null;
                 }
 
                 @Override
-                protected void onPostExecute(List<ServerDevice> serverDevices) {
+                protected void onPostExecute(List<CommandMsgBean> serverDevices) {
                     super.onPostExecute(serverDevices);
                     isSearching = false;
                     if (mCallback != null) {
@@ -113,7 +113,7 @@ public class ClientSearchService extends Service {
     private DatagramPacket searchPacket;
     List<String> keys = new ArrayList<>();
 
-    private void sendUDPBroadcast(List<ServerDevice> results) {
+    private void sendUDPBroadcast(List<CommandMsgBean> results) {
         keys.clear();
         Log.d(TAG, "sendUDPBroadcast: 开始" + System.currentTimeMillis());
         int i = 0, period = 3000, times = 5;
@@ -148,8 +148,8 @@ public class ClientSearchService extends Service {
                 String result = new String(packet_re.getData(), packet_re.getOffset(), packet_re.getLength());
                 Log.v(TAG, "result--->" + result);
                 if (Utils.isGoodJson(result)) {
-                    ServerDevice serverDevice = Utils.getObject(result, ServerDevice.class);
-                    if (serverDevice != null && serverDevice.getName() != null) {
+                    CommandMsgBean serverDevice = Utils.getObject(result, CommandMsgBean.class);
+                    if (serverDevice != null && serverDevice.getDevice() != null) {
                         serverDevice.setIp(packet_re.getAddress().getHostAddress());
                         if (!keys.contains(serverDevice.getIp())) {
                             keys.add(serverDevice.getIp());
