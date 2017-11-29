@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.MulticastSocket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -41,12 +42,14 @@ public class TVService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        LogUtils.d(TAG,"onCreate");
         listenSoketOpen();
     }
 
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        LogUtils.d(TAG,"onStartCommand");
         startSocketServerRunnable(ConstantConfig.controlPort);
         return super.onStartCommand(intent, flags, startId);
     }
@@ -76,10 +79,10 @@ public class TVService extends Service {
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-                DatagramSocket mListenerSocket;
+                MulticastSocket mListenerSocket;
                 byte[] buffer = new byte[1024];
                 try {
-                    mListenerSocket = new DatagramSocket(ConstantConfig.broadcastPort);
+                    mListenerSocket = new MulticastSocket(ConstantConfig.broadcastPort);
                 } catch (IOException e) {
                     e.printStackTrace();
                     LogUtils.e(TAG, "new DatagramSocket() err!");

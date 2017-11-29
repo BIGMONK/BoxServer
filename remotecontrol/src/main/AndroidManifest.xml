@@ -11,10 +11,8 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
-        <service android:name=".server.TVService"
-            android:process=":monitor"/>
+        <service android:name=".server.TVService" />
         <service android:name=".client.ClientSearchService" />
-
         <receiver android:name=".server.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

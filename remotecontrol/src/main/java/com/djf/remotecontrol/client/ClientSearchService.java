@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.djf.remotecontrol.CommandMsgBean;
 import com.djf.remotecontrol.ConstantConfig;
@@ -18,6 +19,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.MulticastSocket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -117,11 +119,12 @@ public class ClientSearchService extends Service {
         keys.clear();
         LogUtils.d(TAG, "sendUDPBroadcast: 开始" + System.currentTimeMillis());
         int i = 0, period = 3000, times = 5;
-        DatagramSocket socket = null;
+        MulticastSocket socket = null;
         try {
             if(socket == null){
-                socket = new DatagramSocket(null);
+                socket = new MulticastSocket(null);
                 socket.setReuseAddress(true);
+                socket.setTimeToLive(1);
                 socket.bind(new InetSocketAddress(ConstantConfig.broadcastPort));
             }
             socket.setSoTimeout(period);
@@ -132,9 +135,8 @@ public class ClientSearchService extends Service {
                 searchPacket = new DatagramPacket(data, data.length, address, broadcastPort);
             }
             socket.send(searchPacket);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
+            LogUtils.d(TAG, "sendUDPBroadcast: "+e.getMessage());
             e.printStackTrace();
         }
         byte data[] = new byte[1024];

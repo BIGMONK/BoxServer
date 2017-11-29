@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -86,7 +87,7 @@ public class TcpServerRunnable implements Runnable {
             }
             serverSocket.close();
         } catch (Exception e) {
-            LogUtils.d(TAG, "遥控器接入监听异常：" + this.toString()
+            LogUtils.e(TAG, "遥控器接入监听异常：" + this.toString()
                     + "  Exception：" + e.toString());
             e.printStackTrace();
             if (serverSocket != null) {
@@ -156,6 +157,7 @@ public class TcpServerRunnable implements Runnable {
             CommandMsgBean serverDevice = null;
             int rcvLen;
             SST.add(this);
+
             while (isRun && is != null) {
                 try {
                     LogUtils.d(TAG, "ServerSocketThread run: read before");
@@ -166,6 +168,7 @@ public class TcpServerRunnable implements Runnable {
                             CommandMsgBean bean = RemoteUtils.getObject(rcvMsg, CommandMsgBean.class);
                             switch (bean.getType()) {
                                 case CommandMsgBean.KEYEVENT:
+                                case CommandMsgBean.SYSTEM:
                                     RemoteUtils.simulateKey(bean.getType(), bean.getKeycode());
                                 case CommandMsgBean.TEXT:
                                     break;
@@ -176,6 +179,15 @@ public class TcpServerRunnable implements Runnable {
                                     }
                                     break;
                                 case CommandMsgBean.OTHER:
+                                    switch (bean.getKeycode()){
+                                        case CommandMsgBean.POWER_CODE://关机命令总是重启，(＃￣～￣＃)
+//                                            RemoteUtils.execShellCmd(" reboot -p");
+                                            RemoteUtils.powerOff();
+                                            break;
+                                        case CommandMsgBean.REBOOT_CODE:
+                                            RemoteUtils.execShellCmd(" reboot");
+                                            break;
+                                    }
                                     break;
                             }
                         } else {

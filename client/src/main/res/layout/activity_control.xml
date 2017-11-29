@@ -79,8 +79,7 @@
         android:layout_alignBottom="@+id/btn_up"
         android:layout_marginLeft="17dp"
         android:layout_toEndOf="@+id/btn_up"
-        android:text="V+"
-        android:visibility="invisible" />
+        android:text="V+" />
 
     <Button
         android:id="@+id/btn_voldec"
@@ -89,8 +88,7 @@
         android:layout_alignBaseline="@+id/btn_up"
         android:layout_alignBottom="@+id/btn_up"
         android:layout_alignStart="@+id/btn_left"
-        android:text="V-"
-        android:visibility="invisible" />
+        android:text="V-" />
 
     <Button
         android:id="@+id/btn_home"
@@ -98,7 +96,8 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/btn_down"
         android:layout_alignStart="@+id/btn_left"
-        android:text="Home" />
+        android:text="Home"
+        android:textAllCaps="false" />
 
     <Button
         android:id="@+id/btn_back"
@@ -106,7 +105,47 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/btn_right"
         android:layout_alignTop="@+id/btn_down"
-        android:text="Back" />
+        android:text="Back"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/btn_power"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_voldec"
+        android:layout_alignStart="@+id/btn_voldec"
+        android:layout_marginBottom="11dp"
+        android:text="Power"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/btn_reboot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/btn_right"
+        android:layout_alignTop="@+id/btn_power"
+        android:text="Reboot"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/btn_test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/btn_reboot"
+        android:layout_alignStart="@+id/btn_up"
+        android:text="Test" />
+
+    <EditText
+        android:id="@+id/tv_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_power"
+        android:layout_marginBottom="13dp"
+        android:layout_marginStart="14dp"
+        android:layout_toEndOf="@+id/btn_connect"
+        android:ems="10"
+        android:hint="测试键值"
+        android:inputType="number" />
 
 
 </RelativeLayout>

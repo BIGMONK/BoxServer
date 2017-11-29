@@ -4,7 +4,7 @@ import android.app.ActivityManager;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
-import android.view.KeyEvent;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.djf.remotecontrol.client.ClientSearchService;
@@ -16,6 +16,7 @@ import com.google.gson.JsonParser;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -87,11 +88,12 @@ public class RemoteUtils {
 
     /**
      * 远程控制初始化
+     *
      * @param context
-     * @param isBox  是盒子端还是app端
+     * @param isBox   是盒子端还是app端
      * @param logout  是否打印日志
      */
-    public static void init(Context context, boolean isBox,boolean logout) {
+    public static void init(Context context, boolean isBox, boolean logout) {
         mContext = context;
         LogUtils.getConfig().setGlobalTag("remote").setConsoleSwitch(logout);
         LogUtils.d(TAG, "init: 初始化");
@@ -130,7 +132,7 @@ public class RemoteUtils {
         new Thread() {
             @Override
             public void run() {
-                if (type == CommandMsgBean.KEYEVENT && KeyEvent.KEYCODE_HOME == KeyCode) {
+                if (type == CommandMsgBean.SYSTEM) {
                     RemoteUtils.execShellCmd("input keyevent " + KeyCode);
                     return;
                 }
@@ -139,13 +141,13 @@ public class RemoteUtils {
                     Instrumentation inst = new Instrumentation();
                     if (CommandMsgBean.KEYEVENT == type)
                         inst.sendKeyDownUpSync(KeyCode);
-                    else
+                    else if (CommandMsgBean.TEXT == type)
                         inst.sendCharacterSync(KeyCode);
                 } catch (Exception e) {
                     LogUtils.e(TAG, "Exception when simulateKey:" + e.toString());
                     if (CommandMsgBean.KEYEVENT == type)
                         RemoteUtils.execShellCmd("input keyevent " + KeyCode);
-                    else
+                    else if (CommandMsgBean.TEXT == type)
                         RemoteUtils.execShellCmd("input text " + KeyCode);
 
                 }
@@ -153,7 +155,6 @@ public class RemoteUtils {
             }
         }.start();
     }
-
 
 
     /**
@@ -194,5 +195,32 @@ public class RemoteUtils {
             mToast.setText(msg);
         }
         mToast.show();
+    }
+
+
+
+    private static void setProperty(String key, String value) {
+        try {
+            Class<?> c = Class.forName("android.os.SystemProperties");
+            Method set = c.getMethod("set", String.class, String.class);
+            set.invoke(c, key, value );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private static  String getProperty(String key, String defaultValue) {
+        String value = defaultValue;
+        try {
+            Class<?> c = Class.forName("android.os.SystemProperties");
+            Method get = c.getMethod("get", String.class, String.class);
+            value = (String)(get.invoke(c, key, "unknown" ));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            return value;
+        }
+    }
+    public static void powerOff(){
+        setProperty("sys.powerctl", "shutdown");
     }
 }

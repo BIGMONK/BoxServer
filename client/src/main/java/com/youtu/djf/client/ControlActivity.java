@@ -7,19 +7,21 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.djf.remotecontrol.CommandMsgBean;
 import com.djf.remotecontrol.ConstantConfig;
 import com.djf.remotecontrol.DeviceUtils;
 import com.djf.remotecontrol.LogUtils;
 import com.djf.remotecontrol.NetworkUtils;
 import com.djf.remotecontrol.RemoteUtils;
 import com.djf.remotecontrol.client.TcpClientRunnable;
-import com.djf.remotecontrol.CommandMsgBean;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -41,6 +43,10 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
     TcpClientRunnable tcpClient;
     ExecutorService cachedThreadPool = Executors.newFixedThreadPool(1);
     private MyBroadcastReceiver myBroadcastReceiver;
+    private Button mBtnPower;
+    private Button mBtnReboot;
+    private Button mBtnTest;
+    private EditText mTvCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +97,14 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
         mBtnHome.setOnClickListener(this);
         mBtnBack = (Button) findViewById(R.id.btn_back);
         mBtnBack.setOnClickListener(this);
+        mBtnPower = (Button) findViewById(R.id.btn_power);
+        mBtnPower.setOnClickListener(this);
+        mBtnReboot = (Button) findViewById(R.id.btn_reboot);
+        mBtnReboot.setOnClickListener(this);
+        mBtnTest = (Button) findViewById(R.id.btn_test);
+        mBtnTest.setOnClickListener(this);
+        mTvCode = (EditText) findViewById(R.id.tv_code);
+        mTvCode.setOnClickListener(this);
     }
 
     @Override
@@ -100,78 +114,93 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
 
                 break;
             case R.id.btn_ok:
-//                RemoteUtils.execShellCmd(KeyEvent.KEYCODE_DPAD_CENTER + "");
                 if (tcpClient != null) {
                     tcpClient.send(RemoteUtils.getStringFromJson(
-                            new CommandMsgBean( CommandMsgBean.KEYEVENT
-                            , KeyEvent.KEYCODE_DPAD_CENTER
-                            , Build.MODEL, DeviceUtils.getMacAddress()
-                            , NetworkUtils.getIPAddress(true)
-                    )));
+                             CommandMsgBean.OK));
                 }
                 break;
             case R.id.btn_down:
-//                RemoteUtils.execShellCmd(KeyEvent.KEYCODE_DPAD_DOWN + "");
                 if (tcpClient != null) {
                     tcpClient.send(RemoteUtils.getStringFromJson(
-                            new CommandMsgBean(CommandMsgBean.KEYEVENT
-                                    , KeyEvent.KEYCODE_DPAD_DOWN
-                                    , Build.MODEL, DeviceUtils.getMacAddress()
-                                    , NetworkUtils.getIPAddress(true)
-                            )));
+                            CommandMsgBean.DOWN));
                 }
                 break;
             case R.id.btn_up:
                 if (tcpClient != null) {
                     tcpClient.send(RemoteUtils.getStringFromJson(
-                            new CommandMsgBean(CommandMsgBean.KEYEVENT
-                                    , KeyEvent.KEYCODE_DPAD_UP
-                                    , Build.MODEL, DeviceUtils.getMacAddress()
-                                    , NetworkUtils.getIPAddress(true)
-                            )));
+                            CommandMsgBean.UP));
                 }
                 break;
             case R.id.btn_left:
                 if (tcpClient != null) {
                     tcpClient.send(RemoteUtils.getStringFromJson(
-                            new CommandMsgBean(CommandMsgBean.KEYEVENT
-                                    , KeyEvent.KEYCODE_DPAD_LEFT
-                                    , Build.MODEL, DeviceUtils.getMacAddress()
-                                    , NetworkUtils.getIPAddress(true)
-                            )));
+                            CommandMsgBean.LEFT));
                 }
                 break;
             case R.id.btn_right:
                 if (tcpClient != null) {
                     tcpClient.send(RemoteUtils.getStringFromJson(
-                            new CommandMsgBean(CommandMsgBean.KEYEVENT
-                                    , KeyEvent.KEYCODE_DPAD_RIGHT
-                                    , Build.MODEL, DeviceUtils.getMacAddress()
-                                    , NetworkUtils.getIPAddress(true)
-                            )));
+                            CommandMsgBean.RIGHT));
                 }
                 break;
             case R.id.btn_home:
                 if (tcpClient != null) {
                     tcpClient.send(RemoteUtils.getStringFromJson(
-                            new CommandMsgBean( CommandMsgBean.KEYEVENT
-                                    , KeyEvent.KEYCODE_HOME
-                                    , Build.MODEL, DeviceUtils.getMacAddress()
-                                    , NetworkUtils.getIPAddress(true)
-                            )));
+                           CommandMsgBean.Home));
                 }
                 break;
             case R.id.btn_back:
                 if (tcpClient != null) {
                     tcpClient.send(RemoteUtils.getStringFromJson(
-                            new CommandMsgBean(CommandMsgBean.KEYEVENT
-                                    , KeyEvent.KEYCODE_BACK
-                                    , Build.MODEL, DeviceUtils.getMacAddress()
-                                    , NetworkUtils.getIPAddress(true)
-                            )));
+                            CommandMsgBean.BACK));
                 }
                 break;
+            case R.id.btn_volinc:
+                if (tcpClient != null) {
+                    tcpClient.send(RemoteUtils.getStringFromJson(
+                            CommandMsgBean.VolUp));
+                }
+                break;
+            case R.id.btn_voldec:
+                if (tcpClient != null) {
+                    tcpClient.send(RemoteUtils.getStringFromJson(
+                            CommandMsgBean.VolDown));
+                }
+                break;
+            case R.id.btn_power:
+                if (tcpClient != null) {
+                    tcpClient.send(RemoteUtils.getStringFromJson(
+                            CommandMsgBean.PowerOff));
+                }
+                break;
+            case R.id.btn_reboot:
+                if (tcpClient != null) {
+                    tcpClient.send(RemoteUtils.getStringFromJson(
+                            CommandMsgBean.Reboot));
+                }
+                break;
+            case R.id.btn_test:
+                submit();
+                break;
         }
+    }
+
+    private void submit() {
+        // validate
+        String code = mTvCode.getText().toString().trim();
+        if (TextUtils.isEmpty(code)) {
+            Toast.makeText(this, "测试键值null", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (tcpClient != null) {
+            tcpClient.send(RemoteUtils.getStringFromJson(
+                    new CommandMsgBean(CommandMsgBean.KEYEVENT
+                            , Integer.parseInt(code)
+                            , Build.MODEL, DeviceUtils.getMacAddress()
+                            , NetworkUtils.getIPAddress(true)
+                    )));
+        }
+
     }
 
     private class MyBroadcastReceiver extends BroadcastReceiver {

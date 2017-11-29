@@ -1,14 +1,35 @@
 package com.djf.remotecontrol;
 
+import android.view.KeyEvent;
+
 /**
  * Created by djf on 2017/11/28.
  */
 
 public class CommandMsgBean {
-    public static final int KEYEVENT = 1, TEXT = 2, DEVICE = 3, OTHER = 4;
+    /**
+     * 指令类型  按键 文字 设备   系统 其他
+     */
+    public static final int KEYEVENT = 1, TEXT = 2, DEVICE = 3,SYSTEM=4, OTHER = 5,POWER_CODE=888,REBOOT_CODE=999;
     private String MatchKey;
     private int type, keycode;
     private String msg, device, mac, ip;
+
+    public static CommandMsgBean Home=new CommandMsgBean(SYSTEM,KeyEvent.KEYCODE_HOME,null,null,null);
+
+    public static CommandMsgBean UP=new CommandMsgBean(KEYEVENT, KeyEvent.KEYCODE_DPAD_UP,null,null,null);
+    public static CommandMsgBean DOWN=new CommandMsgBean(KEYEVENT, KeyEvent.KEYCODE_DPAD_DOWN,null,null,null);
+    public static CommandMsgBean LEFT=new CommandMsgBean(KEYEVENT, KeyEvent.KEYCODE_DPAD_LEFT,null,null,null);
+    public static CommandMsgBean RIGHT=new CommandMsgBean(KEYEVENT, KeyEvent.KEYCODE_DPAD_RIGHT,null,null,null);
+    public static CommandMsgBean BACK=new CommandMsgBean(KEYEVENT, KeyEvent.KEYCODE_BACK,null,null,null);
+    public static CommandMsgBean OK=new CommandMsgBean(KEYEVENT, KeyEvent.KEYCODE_DPAD_CENTER,null,null,null);
+
+    public static CommandMsgBean VolUp=new CommandMsgBean(KEYEVENT, KeyEvent.KEYCODE_VOLUME_UP,null,null,null);
+    public static CommandMsgBean VolDown=new CommandMsgBean(KEYEVENT, KeyEvent.KEYCODE_VOLUME_DOWN,null,null,null);
+
+    public static CommandMsgBean PowerOff=new CommandMsgBean(OTHER,POWER_CODE,null,null,null);
+
+    public static CommandMsgBean Reboot=new CommandMsgBean(OTHER,REBOOT_CODE,null,null,null);
 
     public CommandMsgBean(int type, String msg, String device, String mac, String ip) {
         this.MatchKey = ConstantConfig.KEY;

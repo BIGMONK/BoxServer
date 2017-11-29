@@ -26,6 +26,14 @@ task makeJar(type: Copy) {
     rename('classes.jar', 'remote.jar')
 }
 makeJar.dependsOn(build)
+task makeAar(type: Copy) {
+    delete 'build/libs/remotecontrol.aar'
+    from('build/outputs/aar/remotecontrol-release.aar')
+    into('build/libs/')
+    include('remotecontrol-release.aar')
+    rename('remotecontrol-release.aar', 'remotecontrol.aar')
+}
+makeAar.dependsOn(build)
 
 
 dependencies {

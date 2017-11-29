@@ -33,10 +33,7 @@ public class MainActivity extends AppCompatActivity implements SerachEventCallba
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-
-
         startSearchService(this, this);
-
     }
 
     private void startSearchService(Context context, SerachEventCallback<Integer> callback) {
@@ -87,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements SerachEventCallba
                 break;
             case SerachEventCallback.Searching:
                 LogUtils.d(TAG, "onEvent: 正在广播搜索");
-
                 break;
         }
     }
