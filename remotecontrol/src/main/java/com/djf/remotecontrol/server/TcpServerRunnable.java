@@ -121,7 +121,7 @@ public class TcpServerRunnable implements Runnable {
         private OutputStream os = null;
         private String ip = null;
         private boolean isRun = true;
-
+        String rcvMsg,deviceName="";
         ServerSocketThread(Socket socket) {
             this.socket = socket;
             ip = socket.getInetAddress().toString();
@@ -162,7 +162,7 @@ public class TcpServerRunnable implements Runnable {
         @Override
         public void run() {
             byte buff[] = new byte[1024];
-            String rcvMsg;
+
             CommandMsgBean serverDevice = null;
             int rcvLen;
             SST.add(this);
@@ -184,7 +184,14 @@ public class TcpServerRunnable implements Runnable {
                                 case CommandMsgBean.DEVICE:
                                     serverDevice = RemoteUtils.getObject(rcvMsg, CommandMsgBean.class);
                                     if (serverDevice != null && !TextUtils.isEmpty(serverDevice.getDevice())) {
-                                        LogUtils.d(TAG, "遥控:" + serverDevice.getDevice() + "-->" + serverDevice.getMac() + "已连接");
+                                        deviceName=serverDevice.getDevice();
+                                        LogUtils.d(TAG, "遥控:" + deviceName+ "-->" + serverDevice.getMac() + "已连接");
+                                        RemoteUtils.getrHandler().post(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                            RemoteUtils.showToast("遥控："+deviceName+"已连接。");
+                                            }
+                                        });
                                     }
                                     break;
                                 case CommandMsgBean.OTHER:
@@ -237,6 +244,12 @@ public class TcpServerRunnable implements Runnable {
                 SST.remove(this);
                 LogUtils.i(TAG, "run: 断开连接 " + this.toString());
                 LogUtils.d(TAG, "遥控:" + serverDevice.getDevice() + "已断开");
+                RemoteUtils.getrHandler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        RemoteUtils.showToast("遥控："+deviceName+"已断开。");
+                    }
+                });
             } catch (IOException e) {
                 LogUtils.d(TAG, "远程命令执行线程关闭连接ServerSocketThread:" + this.toString()
                         + "   run Exception：" + e.toString());

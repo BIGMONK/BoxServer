@@ -5,6 +5,7 @@ import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -87,6 +88,17 @@ public class RemoteUtils {
     }
 
 
+    private static Thread rMainThread;
+    private static Handler rHandler;
+
+    public static Thread getrMainThread() {
+        return rMainThread;
+    }
+
+    public static Handler getrHandler() {
+        return rHandler;
+    }
+
     /**
      * 远程控制初始化
      *
@@ -96,6 +108,8 @@ public class RemoteUtils {
      */
     public static void init(Context context, boolean isBox, boolean logout) {
         mContext = context;
+        rHandler=new Handler();
+        rMainThread=Thread.currentThread();
         LogUtils.getConfig().setGlobalTag("remote").setConsoleSwitch(logout);
         LogUtils.d(TAG, "init: 初始化");
         if (isRk3288() && isBox) {
