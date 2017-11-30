@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -97,9 +98,18 @@ public class RemoteUtils {
         mContext = context;
         LogUtils.getConfig().setGlobalTag("remote").setConsoleSwitch(logout);
         LogUtils.d(TAG, "init: 初始化");
-        if ("rk3288".equals(android.os.Build.MODEL) && isBox) {
+        if (isRk3288() && isBox) {
             mContext.startService(new Intent(mContext, TVService.class));
         }
+    }
+
+    public static boolean isRk3288(){
+        if ((ConstantConfig.RK3288.equalsIgnoreCase(android.os.Build.MODEL)
+                || ConstantConfig.RK3288.equalsIgnoreCase(Build.PRODUCT) ||
+                ConstantConfig.RK3288.equalsIgnoreCase(Build.DEVICE))){
+            return true;
+        }
+        return false;
     }
 
     public static Context getmContext() {
@@ -198,29 +208,30 @@ public class RemoteUtils {
     }
 
 
-
     private static void setProperty(String key, String value) {
         try {
             Class<?> c = Class.forName("android.os.SystemProperties");
             Method set = c.getMethod("set", String.class, String.class);
-            set.invoke(c, key, value );
+            set.invoke(c, key, value);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    private static  String getProperty(String key, String defaultValue) {
+
+    private static String getProperty(String key, String defaultValue) {
         String value = defaultValue;
         try {
             Class<?> c = Class.forName("android.os.SystemProperties");
             Method get = c.getMethod("get", String.class, String.class);
-            value = (String)(get.invoke(c, key, "unknown" ));
+            value = (String) (get.invoke(c, key, "unknown"));
         } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             return value;
         }
     }
-    public static void powerOff(){
+
+    public static void powerOff() {
         setProperty("sys.powerctl", "shutdown");
     }
 }

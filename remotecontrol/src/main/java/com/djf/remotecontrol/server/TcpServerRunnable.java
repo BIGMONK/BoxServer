@@ -11,8 +11,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -66,8 +68,13 @@ public class TcpServerRunnable implements Runnable {
         } catch (IOException e) {
             LogUtils.d(TAG, "遥控器接入监听异常TcpServerRunnable run getSocket ：" + this.toString()
                     + "  serverSocket：" + serverSocket.toString()
-                    + "  IOException：" + e.toString());
+                    + "  IOException：" + e.toString()+"  getMessage="+e.getMessage()+"   getCause="+e.getCause());
             e.printStackTrace();
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
             return null;
         }
     }
@@ -75,7 +82,9 @@ public class TcpServerRunnable implements Runnable {
     @Override
     public void run() {
         try {
-            serverSocket = new ServerSocket(port);
+            serverSocket = new ServerSocket();
+            serverSocket.setReuseAddress(true);
+            serverSocket.bind(new InetSocketAddress(port));
             serverSocket.setSoTimeout(30000);
             while (isListen) {
                 LogUtils.i(TAG, "遥控器接入监听开始：" + this.toString()

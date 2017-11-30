@@ -116,9 +116,8 @@ public class TcpClientRunnable implements Runnable {
                 pw = new PrintWriter(socket.getOutputStream(), true);
                 //连接成功之后立即给服务器发送一条设备消息
                 send(RemoteUtils.getStringFromJson(
-                        new CommandMsgBean(CommandMsgBean.DEVICE
-                                , -1
-                                , Build.MODEL, DeviceUtils.getMacAddress()
+                        new CommandMsgBean(CommandMsgBean.DEVICE, -1
+                                , Build.PRODUCT, DeviceUtils.getMacAddress()
                                 , NetworkUtils.getIPAddress(true)
                         )
                 ));
@@ -134,8 +133,8 @@ public class TcpClientRunnable implements Runnable {
                     intent.setAction("tcpClientReceiver");
                 }
                 intent.putExtra("tcpClientReceiver", "连接服务器失败:" + serverIP + ":"
-                        + serverPort + "…"+ new Date().toString());
-                intent.putExtra("flag",  ConstantConfig.FailedConnected);
+                        + serverPort + "…" + new Date().toString());
+                intent.putExtra("flag", ConstantConfig.FailedConnected);
 
                 RemoteUtils.getmContext().sendBroadcast(intent);//将消息发送给主界面
                 try {
@@ -163,7 +162,7 @@ public class TcpClientRunnable implements Runnable {
                         intent.setAction("tcpClientReceiver");
                     }
                     intent.putExtra("tcpClientReceiver", rcvMsg);
-                    intent.putExtra("flag",  ConstantConfig.Connecting);
+                    intent.putExtra("flag", ConstantConfig.Connecting);
                     RemoteUtils.getmContext().sendBroadcast(intent);//将消息发送给主界面
                 } else {
                     LogUtils.i(TAG, "run: 收到消息:服务器关闭时read不阻塞 read返回-1  "
@@ -176,7 +175,7 @@ public class TcpClientRunnable implements Runnable {
                         intent.setAction("tcpClientReceiver");
                     }
                     intent.putExtra("tcpClientReceiver", "服务器已断开");
-                    intent.putExtra("flag",  ConstantConfig.Disconnected);
+                    intent.putExtra("flag", ConstantConfig.Disconnected);
                     RemoteUtils.getmContext().sendBroadcast(intent);//将消息发送给主界面
                     isWhile = false;
                     Thread.sleep(50);

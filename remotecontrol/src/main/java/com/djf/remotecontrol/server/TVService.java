@@ -101,7 +101,7 @@ public class TVService extends Service {
                             String mDeviceName =  new GsonBuilder().create().toJson(
                                     new CommandMsgBean( CommandMsgBean.DEVICE
                                             , -1
-                                            , Build.MODEL, DeviceUtils.getMacAddress()
+                                            , Build.PRODUCT, DeviceUtils.getMacAddress()
                                             , NetworkUtils.getIPAddress(true)
                                     )
                             );
