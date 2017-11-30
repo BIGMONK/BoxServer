@@ -130,7 +130,7 @@ public class ClientSearchService extends Service {
             socket.setSoTimeout(period);
             if (searchPacket == null) {
                 InetAddress address = InetAddress.getByName("255.255.255.255");
-                String string = ConstantConfig.UDPBroadcastTAG+"from device:" + android.os.Build.PRODUCT;
+                String string = ConstantConfig.UDPBroadcastTAG+":" + android.os.Build.PRODUCT;
                 byte[] data = string.getBytes();
                 searchPacket = new DatagramPacket(data, data.length, address, broadcastPort);
             }
@@ -152,8 +152,8 @@ public class ClientSearchService extends Service {
                 //等待接受广播响应信息
                 if (RemoteUtils.isGoodJson(result)) {
                     CommandMsgBean serverDevice = RemoteUtils.getObject(result, CommandMsgBean.class);
-                    if (serverDevice != null && serverDevice.getDevice() != null) {
-                        serverDevice.setIp(packet_re.getAddress().getHostAddress());
+                    if (serverDevice != null && serverDevice.getType() == CommandMsgBean.DEVICE) {
+//                        serverDevice.setIp(packet_re.getAddress().getHostAddress());
                         if (!keys.contains(serverDevice.getIp())) {
                             keys.add(serverDevice.getIp());
                             results.add(serverDevice);
