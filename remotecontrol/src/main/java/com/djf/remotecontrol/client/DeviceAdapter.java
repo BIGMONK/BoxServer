@@ -7,6 +7,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.djf.remotecontrol.CommandMsgBean;
+import com.djf.remotecontrol.LogUtils;
 
 import java.util.List;
 
@@ -49,6 +50,7 @@ public class DeviceAdapter extends BaseAdapter {
                 : (bean.getKeycode() == CommandMsgBean.DEVICE_BOAT ? "划船机" : (bean.getKeycode() ==
                 CommandMsgBean.DEVICE_COACH ? "健身房系统" : "未知设备"));
         String msg = bean.getDevice() + "  " + type + "  MAC=" + bean.getMac() + "  IP=" + bean.getIp();
+        LogUtils.d("发现设备："+msg+"    "+bean.toString());
         textView.setText(msg);
         return textView;
     }

@@ -117,7 +117,7 @@ public class TcpClientRunnable implements Runnable {
                 pw = new PrintWriter(socket.getOutputStream(), true);
                 //连接成功之后立即给服务器发送一条设备消息
                 send(RemoteUtils.getStringFromJson(
-                        new CommandMsgBean(CommandMsgBean.DEVICE, -1
+                        new CommandMsgBean(CommandMsgBean.DEVICE, RemoteUtils.getmBoxType()
                                 , Build.PRODUCT, DeviceUtils.getMacAddress()
                                 , NetworkUtils.getIPAddress(true)
                         )

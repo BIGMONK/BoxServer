@@ -18,14 +18,7 @@ android {
         }
     }
 }
-task makeJar(type: Copy) {
-    delete 'build/libs/remote.jar'
-    from('build/intermediates/bundles/default/')
-    into('build/libs/')
-    include('classes.jar')
-    rename('classes.jar', 'remote.jar')
-}
-makeJar.dependsOn(build)
+
 task makeAar(type: Copy) {
     delete 'build/libs/remotecontrol.aar'
     from('build/outputs/aar/remotecontrol-release.aar')
