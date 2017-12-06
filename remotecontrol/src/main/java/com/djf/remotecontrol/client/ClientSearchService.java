@@ -130,7 +130,7 @@ public class ClientSearchService extends Service {
             socket.setSoTimeout(period);
             if (searchPacket == null) {
                 InetAddress address = InetAddress.getByName("255.255.255.255");
-                String string = ConstantConfig.UDPBroadcastTAG+":" + android.os.Build.PRODUCT;
+                String string = ConstantConfig.UDPBroadcastTAG+":" + android.os.Build.MODEL;
                 byte[] data = string.getBytes();
                 searchPacket = new DatagramPacket(data, data.length, address, broadcastPort);
             }

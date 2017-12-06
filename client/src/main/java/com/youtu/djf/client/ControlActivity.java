@@ -196,7 +196,7 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
             tcpClient.send(RemoteUtils.getStringFromJson(
                     new CommandMsgBean(CommandMsgBean.KEYEVENT
                             , Integer.parseInt(code)
-                            , Build.PRODUCT, DeviceUtils.getMacAddress()
+                            , Build.MODEL, DeviceUtils.getMacAddress()
                             , NetworkUtils.getIPAddress(true)
                     )));
         }

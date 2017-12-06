@@ -4,8 +4,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
-import android.util.Log;
-import android.view.KeyEvent;
 
 import com.djf.remotecontrol.CommandMsgBean;
 import com.djf.remotecontrol.ConstantConfig;
@@ -17,7 +15,6 @@ import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.util.concurrent.ExecutorService;
@@ -102,7 +99,7 @@ public class TVService extends Service {
                             String mDeviceName =  new GsonBuilder().create().toJson(
                                     new CommandMsgBean( CommandMsgBean.DEVICE
                                             , RemoteUtils.getmBoxType()
-                                            , Build.PRODUCT, DeviceUtils.getMacAddress()
+                                            , Build.MODEL, DeviceUtils.getMacAddress()
                                             , NetworkUtils.getIPAddress(true)
                                     )
                             );
