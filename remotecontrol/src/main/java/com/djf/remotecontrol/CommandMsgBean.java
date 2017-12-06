@@ -10,35 +10,32 @@ public class CommandMsgBean {
     /**
      * 指令类型  按键 文字 设备   系统 其他
      */
-    public static final int KEYEVENT = 1, TEXT = 2, DEVICE = 3,SYSTEM=4, OTHER = 5,POWER_CODE=888,REBOOT_CODE=999;
+    public static final int KEYEVENT = 1, TEXT = 2, DEVICE = 3, SYSTEM = 4, OTHER = 5,
+            POWER_CODE = 888, REBOOT_CODE = 999, RES_UP = 10, RES_DOWN = 11;
     private String MatchKey;
     private int type, keycode;
     private String msg, device, mac, ip;
 
-    public static CommandMsgBean Home=new CommandMsgBean(SYSTEM,KeyEvent.KEYCODE_HOME,null,null,null);
+    public static final int DEVICE_FAMILY=31,DEVICE_COACH=32,DEVICE_BOAT=33,DEVICE_UNKNOWN=0;
 
-    public static CommandMsgBean UP=new CommandMsgBean(KEYEVENT, KeyEvent.KEYCODE_DPAD_UP,null,null,null);
-    public static CommandMsgBean DOWN=new CommandMsgBean(KEYEVENT, KeyEvent.KEYCODE_DPAD_DOWN,null,null,null);
-    public static CommandMsgBean LEFT=new CommandMsgBean(KEYEVENT, KeyEvent.KEYCODE_DPAD_LEFT,null,null,null);
-    public static CommandMsgBean RIGHT=new CommandMsgBean(KEYEVENT, KeyEvent.KEYCODE_DPAD_RIGHT,null,null,null);
-    public static CommandMsgBean BACK=new CommandMsgBean(KEYEVENT, KeyEvent.KEYCODE_BACK,null,null,null);
-    public static CommandMsgBean OK=new CommandMsgBean(KEYEVENT, KeyEvent.KEYCODE_DPAD_CENTER,null,null,null);
+    public static CommandMsgBean Home = new CommandMsgBean(SYSTEM, KeyEvent.KEYCODE_HOME, null,
+            null, null);
 
-    public static CommandMsgBean VolUp=new CommandMsgBean(KEYEVENT, KeyEvent.KEYCODE_VOLUME_UP,null,null,null);
-    public static CommandMsgBean VolDown=new CommandMsgBean(KEYEVENT, KeyEvent.KEYCODE_VOLUME_DOWN,null,null,null);
+    public static CommandMsgBean UP = new CommandMsgBean(KEYEVENT, KeyEvent.KEYCODE_DPAD_UP,
+            null, null, null), DOWN = new CommandMsgBean(KEYEVENT, KeyEvent.KEYCODE_DPAD_DOWN,
+            null, null, null), LEFT = new CommandMsgBean(KEYEVENT, KeyEvent.KEYCODE_DPAD_LEFT,
+            null, null, null), RIGHT = new CommandMsgBean(KEYEVENT, KeyEvent.KEYCODE_DPAD_RIGHT,
+            null, null, null), BACK = new CommandMsgBean(KEYEVENT, KeyEvent.KEYCODE_BACK, null,
+            null, null), OK = new CommandMsgBean(KEYEVENT, KeyEvent.KEYCODE_DPAD_CENTER, null,
+            null, null), VolUp = new CommandMsgBean(KEYEVENT, KeyEvent.KEYCODE_VOLUME_UP,
+            null, null, null), VolDown = new CommandMsgBean(KEYEVENT, KeyEvent
+            .KEYCODE_VOLUME_DOWN, null, null, null);
 
-    public static CommandMsgBean PowerOff=new CommandMsgBean(OTHER,POWER_CODE,null,null,null);
+    public static CommandMsgBean PowerOff = new CommandMsgBean(OTHER, POWER_CODE, null, null,
+            null), Reboot = new CommandMsgBean(OTHER, REBOOT_CODE, null, null, null), ResUp = new
+            CommandMsgBean(OTHER, RES_UP, null, null, null), ResDown = new CommandMsgBean(OTHER,
+            RES_DOWN, null, null, null);
 
-    public static CommandMsgBean Reboot=new CommandMsgBean(OTHER,REBOOT_CODE,null,null,null);
-
-    public CommandMsgBean(int type, String msg, String device, String mac, String ip) {
-        this.MatchKey = ConstantConfig.KEY;
-        this.type = type;
-        this.msg = msg;
-        this.device = device;
-        this.mac = mac;
-        this.ip = ip;
-    }
 
     public CommandMsgBean(int type, int keycode, String device, String mac, String ip) {
         this.MatchKey = ConstantConfig.KEY;

@@ -6,7 +6,7 @@ package com.djf.remotecontrol.client;
 
 
 public interface SerachEventCallback<T> {
-    public int ServiceStart=1,
+    int ServiceStart=1,
     Searching=4,
     StartSearch=2,
     EndSearch=3;

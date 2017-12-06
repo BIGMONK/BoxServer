@@ -12,6 +12,7 @@ import com.djf.remotecontrol.ConstantConfig;
 import com.djf.remotecontrol.DeviceUtils;
 import com.djf.remotecontrol.LogUtils;
 import com.djf.remotecontrol.NetworkUtils;
+import com.djf.remotecontrol.RemoteUtils;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
@@ -100,7 +101,7 @@ public class TVService extends Service {
                             //服务端收到广播数据之后回复服务端信息
                             String mDeviceName =  new GsonBuilder().create().toJson(
                                     new CommandMsgBean( CommandMsgBean.DEVICE
-                                            , -1
+                                            , RemoteUtils.getmBoxType()
                                             , Build.PRODUCT, DeviceUtils.getMacAddress()
                                             , NetworkUtils.getIPAddress(true)
                                     )

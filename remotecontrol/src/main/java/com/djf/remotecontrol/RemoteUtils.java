@@ -35,6 +35,33 @@ public class RemoteUtils {
     private static Gson mGson = new GsonBuilder().create();
     private static ClientSearchService msearchService;
 
+    public static int getmBoxType() {
+        return mBoxType;
+    }
+
+    public static void setmBoxType(int mBoxType) {
+        RemoteUtils.mBoxType = mBoxType;
+    }
+
+    private static int mBoxType=0;
+    /**
+     * 远程控制初始化
+     *
+     * @param context
+     * @param isBox   是盒子端还是app端
+     * @param logout  是否打印日志
+     */
+    public static void init(Context context, boolean isBox,int boxType, boolean logout) {
+        mContext = context;
+        rHandler=new Handler();
+        rMainThread=Thread.currentThread();
+        LogUtils.getConfig().setGlobalTag("remote").setConsoleSwitch(logout);
+        LogUtils.d(TAG, "init: 初始化");
+        if (isRk3288() && isBox) {
+            mBoxType=boxType;
+            mContext.startService(new Intent(mContext, TVService.class));
+        }
+    }
     public static ClientSearchService getSearchService() {
         return msearchService;
     }
@@ -99,23 +126,7 @@ public class RemoteUtils {
         return rHandler;
     }
 
-    /**
-     * 远程控制初始化
-     *
-     * @param context
-     * @param isBox   是盒子端还是app端
-     * @param logout  是否打印日志
-     */
-    public static void init(Context context, boolean isBox, boolean logout) {
-        mContext = context;
-        rHandler=new Handler();
-        rMainThread=Thread.currentThread();
-        LogUtils.getConfig().setGlobalTag("remote").setConsoleSwitch(logout);
-        LogUtils.d(TAG, "init: 初始化");
-        if (isRk3288() && isBox) {
-            mContext.startService(new Intent(mContext, TVService.class));
-        }
-    }
+
 
     public static boolean isRk3288(){
         if ((ConstantConfig.RK3288.equalsIgnoreCase(android.os.Build.MODEL)

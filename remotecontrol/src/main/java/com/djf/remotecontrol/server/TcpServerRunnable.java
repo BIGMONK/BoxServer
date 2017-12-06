@@ -68,7 +68,8 @@ public class TcpServerRunnable implements Runnable {
         } catch (IOException e) {
             LogUtils.d(TAG, "遥控器接入监听异常TcpServerRunnable run getSocket ：" + this.toString()
                     + "  serverSocket：" + serverSocket.toString()
-                    + "  IOException：" + e.toString()+"  getMessage="+e.getMessage()+"   getCause="+e.getCause());
+                    + "  IOException：" + e.toString() + "  getMessage=" + e.getMessage() + "   " +
+                    "getCause=" + e.getCause());
             e.printStackTrace();
             try {
                 Thread.sleep(10000);
@@ -121,7 +122,8 @@ public class TcpServerRunnable implements Runnable {
         private OutputStream os = null;
         private String ip = null;
         private boolean isRun = true;
-        String rcvMsg,deviceName="";
+        String rcvMsg, deviceName = "";
+
         ServerSocketThread(Socket socket) {
             this.socket = socket;
             ip = socket.getInetAddress().toString();
@@ -174,7 +176,8 @@ public class TcpServerRunnable implements Runnable {
                         rcvMsg = new String(buff, 0, rcvLen, "utf-8").trim();
                         LogUtils.i(TAG, "ServerSocketThread run:收到消息:" + rcvMsg);
                         if (RemoteUtils.isGoodJson(rcvMsg)) {
-                            CommandMsgBean bean = RemoteUtils.getObject(rcvMsg, CommandMsgBean.class);
+                            CommandMsgBean bean = RemoteUtils.getObject(rcvMsg, CommandMsgBean
+                                    .class);
                             switch (bean.getType()) {
                                 case CommandMsgBean.KEYEVENT:
                                 case CommandMsgBean.SYSTEM:
@@ -182,26 +185,35 @@ public class TcpServerRunnable implements Runnable {
                                 case CommandMsgBean.TEXT:
                                     break;
                                 case CommandMsgBean.DEVICE:
-                                    serverDevice = RemoteUtils.getObject(rcvMsg, CommandMsgBean.class);
-                                    if (serverDevice != null && !TextUtils.isEmpty(serverDevice.getDevice())) {
-                                        deviceName=serverDevice.getDevice();
-                                        LogUtils.d(TAG, "遥控:" + deviceName+ "-->" + serverDevice.getMac() + "已连接");
+                                    serverDevice = RemoteUtils.getObject(rcvMsg, CommandMsgBean
+                                            .class);
+                                    if (serverDevice != null && !TextUtils.isEmpty(serverDevice
+                                            .getDevice())) {
+                                        deviceName = serverDevice.getDevice();
+                                        LogUtils.d(TAG, "遥控:" + deviceName + "-->" + serverDevice
+                                                .getMac() + "已连接");
                                         RemoteUtils.getrHandler().post(new Runnable() {
                                             @Override
                                             public void run() {
-                                            RemoteUtils.showToast("遥控："+deviceName+"已连接。");
+                                                RemoteUtils.showToast("遥控：" + deviceName + "已连接。");
                                             }
                                         });
                                     }
                                     break;
                                 case CommandMsgBean.OTHER:
-                                    switch (bean.getKeycode()){
+                                    switch (bean.getKeycode()) {
                                         case CommandMsgBean.POWER_CODE://关机命令总是重启，(＃￣～￣＃)
 //                                            RemoteUtils.execShellCmd(" reboot -p");
                                             RemoteUtils.powerOff();
                                             break;
                                         case CommandMsgBean.REBOOT_CODE:
                                             RemoteUtils.execShellCmd(" reboot");
+                                            break;
+                                        case CommandMsgBean.RES_UP:
+                                            LogUtils.d("阻力加");
+                                            break;
+                                        case CommandMsgBean.RES_DOWN:
+                                            LogUtils.d("阻力减");
                                             break;
                                     }
                                     break;
@@ -247,7 +259,7 @@ public class TcpServerRunnable implements Runnable {
                 RemoteUtils.getrHandler().post(new Runnable() {
                     @Override
                     public void run() {
-                        RemoteUtils.showToast("遥控："+deviceName+"已断开。");
+                        RemoteUtils.showToast("遥控：" + deviceName + "已断开。");
                     }
                 });
             } catch (IOException e) {
