@@ -72,7 +72,7 @@ public class TcpServerRunnable implements Runnable {
                     "getCause=" + e.getCause());
             e.printStackTrace();
             try {
-                Thread.sleep(10000);
+                Thread.sleep(5000);
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }
@@ -89,7 +89,7 @@ public class TcpServerRunnable implements Runnable {
             serverSocket.setSoTimeout(30000);
             while (isListen) {
                 LogUtils.i(TAG, "遥控器接入监听开始：" + this.toString()
-                        + "  serverSocket=" + serverSocket.toString());
+                        + "  serverSocket=" + serverSocket.toString()+" size="+SST.size());
                 Socket socket = getSocket(serverSocket);
                 if (socket != null) {
                     new ServerSocketThread(socket);
@@ -195,7 +195,7 @@ public class TcpServerRunnable implements Runnable {
                                         RemoteUtils.getrHandler().post(new Runnable() {
                                             @Override
                                             public void run() {
-                                                RemoteUtils.showToast("遥控：" + deviceName + "已连接。");
+                                                RemoteUtils.showToast("遥控：" + deviceName + " 已连接。");
                                             }
                                         });
                                     }
@@ -255,11 +255,11 @@ public class TcpServerRunnable implements Runnable {
                     socket.close();
                 SST.remove(this);
                 LogUtils.i(TAG, "run: 断开连接 " + this.toString());
-                LogUtils.d(TAG, "遥控:" + serverDevice.getDevice() + "已断开");
+                LogUtils.d(TAG, "遥控:" + deviceName  + " 已断开");
                 RemoteUtils.getrHandler().post(new Runnable() {
                     @Override
                     public void run() {
-                        RemoteUtils.showToast("遥控：" + deviceName + "已断开。");
+                        RemoteUtils.showToast("遥控：" + deviceName + " 已断开。");
                     }
                 });
             } catch (IOException e) {
