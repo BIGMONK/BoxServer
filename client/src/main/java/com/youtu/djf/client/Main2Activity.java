@@ -127,6 +127,10 @@ public class Main2Activity extends AppCompatActivity implements AdapterView.OnIt
                                         .LENGTH_SHORT).show();
                         }
                         progressBar.cancel();
+                        if (runnable!=null){
+                            runnable.closeSelf();
+                            runnable=null;
+                        }
                     }
                 });
 

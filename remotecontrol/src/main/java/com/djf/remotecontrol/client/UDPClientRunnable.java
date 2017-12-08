@@ -48,7 +48,7 @@ public class UDPClientRunnable implements Runnable {
             socket.setReuseAddress(true);
             socket.setTimeToLive(1);
             socket.bind(new InetSocketAddress(broadcastPort));
-            socket.setSoTimeout(3000);
+            socket.setSoTimeout(5000);
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -155,7 +155,6 @@ public class UDPClientRunnable implements Runnable {
                             e.printStackTrace();
                         }
                     }
-
                     isBroadcasting = false;
                     if (mCallback != null) {
                         mCallback.onEvent(SerachEventCallback.EndSearch);//扫描结束
