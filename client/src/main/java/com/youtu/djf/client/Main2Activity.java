@@ -16,6 +16,7 @@ import com.djf.remotecontrol.client.DeviceAdapter;
 import com.djf.remotecontrol.client.SerachEventCallback;
 import com.djf.remotecontrol.client.UDPClientRunnable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -59,25 +60,19 @@ public class Main2Activity extends AppCompatActivity implements AdapterView.OnIt
                         exec = Executors.newCachedThreadPool();
                     }
                     exec.execute(runnable);
-                    runnable.sendUDPBroadcast(500, 10);
-                } else {
-                    runnable.sendUDPBroadcast(500, 10);
-                    LogUtils.dTag(TAG, "runnable.sendUDPBroadcast(500, 10);  after");
                 }
             }
         }
+        runnable.sendUDPBroadcast(500, 5);
     }
 
-    List<CommandMsgBean> results;
+    List<CommandMsgBean> results=new ArrayList<>();
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (runnable != null) {
             runnable.closeSelf();
             runnable = null;
-        }
-        if (exec != null) {
-            exec.shutdownNow();
         }
         Intent intent = new Intent(this, ControlActivity.class);
         intent.putExtra("ip", results.get(position).getIp());
@@ -118,9 +113,10 @@ public class Main2Activity extends AppCompatActivity implements AdapterView.OnIt
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        LogUtils.d(TAG, "onEvent: 结束广播搜索");
                         Toast.makeText(Main2Activity.this, "结束广播搜索", Toast.LENGTH_SHORT).show();
-                        results = runnable.getResults();
+                        results.addAll(runnable.getResults());
+                        LogUtils.d(TAG, "onEvent: 结束广播搜索" + results.size());
+
                         if (adapter == null) {
                             adapter = new DeviceAdapter(Main2Activity.this, results);
                             mLvResult.setAdapter(adapter);
