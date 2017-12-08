@@ -226,6 +226,7 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
                         case ConstantConfig.FailedConnected:
                             LogUtils.d(TAG, "onReceive: 设备连接失败");
                             showToast("设备连接失败");
+                            finish();
                             break;
                         case ConstantConfig.Connecting:
                             LogUtils.d(TAG, "onReceive: 收到消息");
