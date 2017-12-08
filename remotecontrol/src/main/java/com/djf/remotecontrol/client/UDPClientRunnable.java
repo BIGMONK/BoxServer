@@ -102,6 +102,11 @@ public class UDPClientRunnable implements Runnable {
 
     int mtimes, mperiod;
 
+    /**
+     *
+     * @param period    广播周期
+     * @param times     广播次数
+     */
     public void sendUDPBroadcast(int period, int times) {
         if (isBroadcasting) {
             if (mCallback != null) {
@@ -133,6 +138,7 @@ public class UDPClientRunnable implements Runnable {
                 byte[] data = string.getBytes();
                 searchPacket = new DatagramPacket(data, data.length, address, broadcastPort);
             }
+            LogUtils.dTag(TAG, "发送广播:" + mtimes);
             exec.execute(new Runnable() {
                 @Override
                 public void run() {

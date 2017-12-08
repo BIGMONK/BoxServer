@@ -103,7 +103,7 @@ public class TcpClientRunnable implements Runnable {
             isWhile = true;
             try {
                 socket = new Socket(serverIP, serverPort);
-                socket.setSoTimeout(1000);
+                socket.setSoTimeout(3000);
                 if (intent == null) {
                     intent = new Intent();
                     intent.setAction("tcpClientReceiver");

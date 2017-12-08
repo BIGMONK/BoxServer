@@ -63,7 +63,7 @@ public class Main2Activity extends AppCompatActivity implements AdapterView.OnIt
                 }
             }
         }
-        runnable.sendUDPBroadcast(500, 5);
+        runnable.sendUDPBroadcast(500, 1);
     }
 
     List<CommandMsgBean> results=new ArrayList<>();
