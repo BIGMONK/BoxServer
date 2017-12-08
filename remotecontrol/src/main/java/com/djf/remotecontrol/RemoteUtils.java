@@ -4,6 +4,8 @@ import android.app.ActivityManager;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
@@ -56,12 +58,31 @@ public class RemoteUtils {
         mContext = context;
         rHandler = new Handler();
         rMainThread = Thread.currentThread();
-        LogUtils.getConfig().setGlobalTag("remote").setConsoleSwitch(logout);
+        LogUtils.getConfig().setGlobalTag(getAppName(mContext)).setConsoleSwitch(logout);
         LogUtils.d(TAG, "init: 初始化");
         if (isRk3288() && isBox) {
             mBoxType = boxType;
             mContext.startService(new Intent(mContext, TVService.class));
         }
+    }
+
+    /**
+     * 获取应用程序名称
+     */
+    public static String getAppName(Context context) {
+
+        PackageManager packageManager = context.getPackageManager();
+        PackageInfo packageInfo = null;
+        try {
+            packageInfo = packageManager.getPackageInfo(
+                    context.getPackageName(), 0);
+            int labelRes = packageInfo.applicationInfo.labelRes;
+            return context.getResources().getString(labelRes);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public static ClientSearchService getSearchService() {

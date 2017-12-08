@@ -21,10 +21,12 @@ import com.djf.remotecontrol.client.ClientSearchService;
 import com.djf.remotecontrol.client.DeviceAdapter;
 import com.djf.remotecontrol.client.SerachEventCallback;
 
-public class MainActivity extends AppCompatActivity implements SerachEventCallback<Integer>, View.OnClickListener, AdapterView.OnItemClickListener {
+public class MainActivity extends AppCompatActivity implements SerachEventCallback<Integer>, View
+        .OnClickListener, AdapterView.OnItemClickListener {
     private static final String TAG = "MainActivity";
     private TextView mTvHello;
     private Button mBtnSearch;
+    private Button mBtnSearch2;
     private ListView mLvResult;
     private DeviceAdapter adapter;
 
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements SerachEventCallba
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-        startSearchService(this, this);
+//        startSearchService(this, this);
     }
 
     private void startSearchService(Context context, SerachEventCallback<Integer> callback) {
@@ -60,12 +62,12 @@ public class MainActivity extends AppCompatActivity implements SerachEventCallba
                 bindService();
                 break;
             case SerachEventCallback.StartSearch:
-                LogUtils.d(TAG, "onEvent: 开始广播搜索"+Thread.currentThread().getName());
-                if(adapter!=null){
+                LogUtils.d(TAG, "onEvent: 开始广播搜索" + Thread.currentThread().getName());
+                if (adapter != null) {
                     adapter.notifyDataSetChanged();
                 }
-                if (progressBar==null){
-                    progressBar=new ProgressDialog(this);
+                if (progressBar == null) {
+                    progressBar = new ProgressDialog(this);
                     progressBar.setMessage("正在搜索...");
                 }
                 progressBar.show();
@@ -75,10 +77,10 @@ public class MainActivity extends AppCompatActivity implements SerachEventCallba
                 if (playService.getResults().size() > 0) {
                     adapter = new DeviceAdapter(this, playService.getResults());
                     mLvResult.setAdapter(adapter);
-                    Toast.makeText(this,"搜索结束",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "搜索结束", Toast.LENGTH_SHORT).show();
 
                 } else {
-                    Toast.makeText(this,"没有找到可用设备",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "没有找到可用设备", Toast.LENGTH_SHORT).show();
                 }
                 progressBar.cancel();
                 break;
@@ -93,9 +95,11 @@ public class MainActivity extends AppCompatActivity implements SerachEventCallba
     private void initView() {
         mTvHello = (TextView) findViewById(R.id.tv_hello);
         mBtnSearch = (Button) findViewById(R.id.btn_search);
+        mBtnSearch2 = (Button) findViewById(R.id.btn_search2);
         mLvResult = (ListView) findViewById(R.id.lv_result);
         mLvResult.setOnItemClickListener(this);
         mBtnSearch.setOnClickListener(this);
+        mBtnSearch2.setOnClickListener(this);
 
     }
 
@@ -114,6 +118,9 @@ public class MainActivity extends AppCompatActivity implements SerachEventCallba
                 } else {
                     startSearchService(this, this);
                 }
+                break;
+            case R.id.btn_search2:
+                startActivity(new Intent(this, Main2Activity.class));
                 break;
         }
     }

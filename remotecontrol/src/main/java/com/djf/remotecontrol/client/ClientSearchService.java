@@ -136,7 +136,7 @@ public class ClientSearchService extends Service {
             }
             socket.send(searchPacket);
         } catch (Exception e) {
-            LogUtils.d(TAG, "sendUDPBroadcast: "+e.getMessage());
+            LogUtils.d(TAG, "sendUDPBroadcast Exception: "+e.getMessage());
             e.printStackTrace();
         }
         byte data[] = new byte[1024];

@@ -11,7 +11,7 @@ public class CommandMsgBean {
      * 指令类型  按键 文字 设备   系统 其他
      */
     public static final int KEYEVENT = 1, TEXT = 2, DEVICE = 3, SYSTEM = 4, OTHER = 5,
-            POWER_CODE = 888, REBOOT_CODE = 999, RES_UP = 10, RES_DOWN = 11;
+            POWER_CODE = 888, REBOOT_CODE = 999, RES_UP = 10, RES_DOWN = 11,PING=12,PANG=13;
     private String MatchKey;
     private int type, keycode;
     private String msg, device, mac, ip;
@@ -34,7 +34,9 @@ public class CommandMsgBean {
     public static CommandMsgBean PowerOff = new CommandMsgBean(OTHER, POWER_CODE, null, null,
             null), Reboot = new CommandMsgBean(OTHER, REBOOT_CODE, null, null, null), ResUp = new
             CommandMsgBean(OTHER, RES_UP, null, null, null), ResDown = new CommandMsgBean(OTHER,
-            RES_DOWN, null, null, null);
+            RES_DOWN, null, null, null),BeatPing = new CommandMsgBean(OTHER,
+            PING, null, null, null),BeatPang = new CommandMsgBean(OTHER,
+            PANG, null, null, null);
 
 
     public CommandMsgBean(int type, int keycode, String device, String mac, String ip) {

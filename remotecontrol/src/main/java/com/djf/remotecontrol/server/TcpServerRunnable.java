@@ -215,6 +215,10 @@ public class TcpServerRunnable implements Runnable {
                                         case CommandMsgBean.RES_DOWN:
                                             LogUtils.d("阻力减");
                                             break;
+                                        case CommandMsgBean.PING:
+                                            LogUtils.dTag(TAG,"响应客户端心跳");
+                                            send(RemoteUtils.getStringFromJson(CommandMsgBean.BeatPang));
+                                            break;
                                     }
                                     break;
                             }

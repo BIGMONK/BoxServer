@@ -69,6 +69,7 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
         if (tcpClient != null) {
             tcpClient.closeSelf();
         }
+        cachedThreadPool.shutdownNow();
         unregisterReceiver(myBroadcastReceiver);
     }
 
@@ -232,6 +233,7 @@ public class ControlActivity extends AppCompatActivity implements View.OnClickLi
                         case ConstantConfig.Disconnected:
                             LogUtils.d(TAG, "onReceive: 连接已断开");
                             showToast("连接已断开");
+                            finish();
                             break;
                     }
                     break;
